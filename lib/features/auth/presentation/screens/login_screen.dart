@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../application/services/kakao_login_service.dart';
+import '../../../user/application/services/kakao_login_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('카카오 로그인'),
+        title: const Text('로그인'),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -100,19 +100,13 @@ class _LoginScreenState extends State<LoginScreen> {
             const Icon(Icons.memory, size: 80, color: Colors.blue),
             const SizedBox(height: 24),
             const Text(
-              'Active Memory',
+              '활쓴당',
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 48),
 
             // 로그인되지 않은 상태
             if (_userInfo == null) ...[
-              const Text(
-                '카카오 계정으로 로그인하세요',
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -140,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Icon(Icons.chat_bubble, size: 20),
                             SizedBox(width: 8),
                             Text(
-                              '카카오로 로그인',
+                              '카카오로 시작하기',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,

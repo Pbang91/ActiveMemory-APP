@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/dio_provider.dart';
 import '../../domain/entities/feed.dart';
@@ -36,60 +35,9 @@ class FeedService {
         );
       }
     } on DioException catch (e) {
-      debugPrint('DioException 발생: ${e.type} - ${e.message}');
-      debugPrint('API 호출 실패, 목업 데이터 반환');
       return _getMockFeeds(page: page, limit: limit);
     } catch (e) {
-      debugPrint('기타 오류 발생: $e');
-      debugPrint('목업 데이터 반환');
       return _getMockFeeds(page: page, limit: limit);
-    }
-  }
-
-  /// 키워드로 피드 검색
-  Future<List<Feed>> searchFeeds(
-    String keyword, {
-    int page = 0,
-    int limit = 20,
-  }) async {
-    debugPrint(
-      'FeedService.searchFeeds 호출 - keyword: $keyword, page: $page, limit: $limit',
-    );
-
-    try {
-      debugPrint('검색 API 요청 시도: ${_dio.options.baseUrl}/feeds/search');
-
-      final response = await _dio.get(
-        '/feeds/search',
-        queryParameters: {'keyword': keyword, 'page': page, 'limit': limit},
-      );
-
-      debugPrint('검색 API 응답 성공 - statusCode: ${response.statusCode}');
-
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonList = response.data as List<dynamic>;
-        final List<FeedListDto> dtoList = jsonList
-            .map((json) => FeedListDto.fromJson(json as Map<String, dynamic>))
-            .toList();
-
-        final feeds = FeedMapper.fromDtoList(dtoList);
-        debugPrint('검색 결과 변환 완료 - feeds 개수: ${feeds.length}');
-        return feeds;
-      } else {
-        throw DioException(
-          requestOptions: response.requestOptions,
-          response: response,
-          message: 'Failed to search feeds: ${response.statusCode}',
-        );
-      }
-    } on DioException catch (e) {
-      debugPrint('검색 DioException 발생: ${e.type} - ${e.message}');
-      debugPrint('검색 API 호출 실패, 목업 데이터에서 검색');
-      return _searchMockFeeds(keyword, page: page, limit: limit);
-    } catch (e) {
-      debugPrint('검색 기타 오류 발생: $e');
-      debugPrint('목업 데이터에서 검색');
-      return _searchMockFeeds(keyword, page: page, limit: limit);
     }
   }
 
@@ -138,12 +86,47 @@ class FeedService {
 
   // 목업 데이터 생성 (개발용)
   List<Feed> _getMockFeeds({int page = 0, int limit = 20}) {
-    print('목업 데이터 생성 - page: $page, limit: $limit');
+    final now = DateTime.now();
 
     final allMockFeeds = List.generate(50, (index) {
+      DateTime createdAt;
+
+      switch (index % 8) {
+        case 0: // 방금 전
+          createdAt = now.subtract(const Duration(seconds: 30));
+          break;
+        case 1: // N분 전
+          createdAt = now.subtract(Duration(minutes: 15 + (index % 45)));
+          break;
+        case 2: // N시간 전
+          createdAt = now.subtract(Duration(hours: 2 + (index % 22)));
+          break;
+        case 3: // N일 전 (1-7일)
+          createdAt = now.subtract(Duration(days: 1 + (index % 7)));
+          break;
+        case 4: // 이번 년도
+          createdAt = DateTime(now.year, (index % 12) + 1, (index % 28) + 1);
+          break;
+        case 5: // 작년
+          createdAt = DateTime(
+            now.year - 1,
+            (index % 12) + 1,
+            (index % 28) + 1,
+          );
+          break;
+        default: // 랜덤
+          createdAt = now.subtract(Duration(days: index % 365));
+      }
+
       return Feed(
-        name: '운동 기록 ${index + 1}',
         slug: 'workout-${index + 1}',
+        author: Author(
+          nickname: '사용자${index + 1}',
+          slug: 'user-adfnq-${index + 1}',
+          imageUrl: index % 2 == 0
+              ? 'https://i.pravatar.cc/150?img=${index + 1}'
+              : null,
+        ),
         description: index % 3 == 0
             ? null
             : '오늘의 운동 기록입니다. 정말 힘들었지만 보람찬 하루였어요!',
@@ -152,16 +135,59 @@ class FeedService {
             exerciseId: 'exercise-${index * 2 + 1}',
             exerciseName: index % 2 == 0 ? '벨트 스쿼트' : '데드리프트',
             displayOrder: 1,
+            setList: List.generate(3, (setIndex) {
+              return FeedMetricItem(
+                set: setIndex + 1,
+                rep: 8 + (setIndex * 2),
+                weight: 20.0 + (setIndex * 5),
+                memo: setIndex == 2 ? '마지막 세트 힘들었어요' : null,
+              );
+            }),
           ),
           if (index % 3 == 0)
             FeedMetric(
               exerciseId: 'exercise-${index * 2 + 2}',
               exerciseName: '벤치프레스',
               displayOrder: 2,
+              setList: List.generate(3, (setIndex) {
+                return FeedMetricItem(
+                  set: setIndex + 1,
+                  rep: 10,
+                  weight: 15.0 + (setIndex * 5),
+                  memo: null,
+                );
+              }),
             ),
         ],
-        commentCount: (index * 3) % 10,
-        likeCount: (index * 7) % 50,
+        comments: List.generate(index % 5, (commentIndex) {
+          return FeedComment(
+            slug: 'user-commenter-${commentIndex + 1}',
+            nickname: '댓글러${commentIndex + 1}',
+            imageUrl: commentIndex % 2 == 0
+                ? 'https://i.pravatar.cc/150?img=${commentIndex + 10}'
+                : null,
+            commentId: commentIndex + 1,
+            comment: '멋진 기록이네요! 저도 열심히 해야겠어요.',
+            createdAt: createdAt.subtract(
+              Duration(minutes: (commentIndex + 1) * 5),
+            ),
+            isMine: commentIndex % 4 == 0, // 4번째 댓글은 내가 쓴 댓글
+          );
+        }),
+        likers: List.generate(index % 10, (likerIndex) {
+          return FeedLiker(
+            slug: 'user-liker-${likerIndex + 1}',
+            nickname: '좋아요러${likerIndex + 1}',
+            imageUrl: likerIndex % 2 == 0
+                ? 'https://i.pravatar.cc/150?img=${likerIndex + 20}'
+                : null,
+          );
+        }),
+        imageUrl: index % 4 == 0
+            ? 'https://picsum.photos/400/300?random=$index'
+            : null,
+        createdAt: createdAt,
+        likedFeed: index % 3 == 0,
       );
     });
 
@@ -169,38 +195,11 @@ class FeedService {
     final endIndex = (startIndex + limit).clamp(0, allMockFeeds.length);
 
     if (startIndex >= allMockFeeds.length) {
-      print('페이지 범위 초과 - 빈 리스트 반환');
       return [];
     }
 
     final result = allMockFeeds.sublist(startIndex, endIndex);
-    print('목업 데이터 생성 완료 - ${result.length}개 반환');
-    return result;
-  }
 
-  // 목업 데이터 검색 (개발용)
-  List<Feed> _searchMockFeeds(String keyword, {int page = 0, int limit = 20}) {
-    print('목업 데이터 검색 - keyword: $keyword, page: $page, limit: $limit');
-
-    final allMockFeeds = _getMockFeeds(page: 0, limit: 50);
-    final filteredFeeds = allMockFeeds.where((feed) {
-      return feed.name.contains(keyword) ||
-          (feed.description?.contains(keyword) ?? false) ||
-          feed.metrics.any((metric) => metric.exerciseName.contains(keyword));
-    }).toList();
-
-    print('검색 결과 - ${filteredFeeds.length}개 찾음');
-
-    final startIndex = page * limit;
-    final endIndex = (startIndex + limit).clamp(0, filteredFeeds.length);
-
-    if (startIndex >= filteredFeeds.length) {
-      print('검색 페이지 범위 초과 - 빈 리스트 반환');
-      return [];
-    }
-
-    final result = filteredFeeds.sublist(startIndex, endIndex);
-    print('검색 목업 데이터 반환 - ${result.length}개');
     return result;
   }
 
@@ -213,7 +212,6 @@ class FeedService {
       );
       return nextPageFeeds.isNotEmpty;
     } catch (e) {
-      print('hasMoreFeeds 오류: $e');
       return false;
     }
   }

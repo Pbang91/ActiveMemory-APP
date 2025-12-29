@@ -1,1 +1,27 @@
 include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    prefer_const_constructors: true        # 성능 최적화 (const 사용 강제)
+    prefer_const_literals_to_create_immutables: true
+    prefer_final_locals: true              # 지역 변수도 불변이면 final 강제 (Java의 final과 동일)
+    unnecessary_new: true                  # new 키워드 사용 금지 (Dart는 new 생략 가능)
+    
+    # 2. 타입 안정성 (백엔드 개발자 추천)
+    always_declare_return_types: true      # 리턴 타입 명시 필수 (void라도 써야 함)
+    avoid_annotating_with_dynamic: true    # dynamic 사용 지양
+    type_annotate_public_apis: true        # public 멤버 타입 명시 필수
+    
+    # 3. 코드 품질
+    avoid_print: true                      # print() 금지 (Logger 사용 유도)
+    use_build_context_synchronously: true  # 비동기 함수 내 BuildContext 사용 주의
+    
+analyzer:
+  # 4. 더 엄격한 타입 체크 (선택 사항)
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  exclude:
+    - "**/*.g.dart"       # 자동 생성 파일 린트 제외 (중요!)
+    - "**/*.freezed.dart" # 자동 생성 파일 린트 제외 (중요!)

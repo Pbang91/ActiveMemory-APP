@@ -1,15 +1,15 @@
-import 'package:active_memory/core/config/env_loader.dart';
-import 'package:active_memory/core/config/kakao_init.dart';
-import 'package:active_memory/features/feed/presentation/screens/feed_list_screen.dart';
+import 'package:active_memory/common/config/kakao_init.dart';
+import 'package:active_memory/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-Future main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // env
   final envName = const String.fromEnvironment('ENV', defaultValue: 'dev');
-  await loadEnv(envName);
+  await dotenv.load(fileName: '.env.$envName');
 
   initKakao();
 
@@ -24,7 +24,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Active Memory',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const FeedListScreen(),
+      home: const HomeScreen(),
     );
   }
 }

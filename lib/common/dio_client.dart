@@ -11,9 +11,15 @@ part 'dio_client.g.dart';
 // Riverpod으로 Dio 객체를 전역 관리
 @Riverpod(keepAlive: true)
 Dio dio(Ref ref) {
-  final baseUrl = Platform.isAndroid
-      ? 'http://10.0.2.2:8009/api/v1'
-      : 'http://127.0.0.1:8009/api/v1';
+  String baseUrl;
+
+  if (kIsWeb) {
+    baseUrl = 'http://localhost:8009/api/v1';
+  } else if (Platform.isAndroid) {
+    baseUrl = 'http://10.0.2.2:8009/api/v1';
+  } else {
+    baseUrl = 'http://127.0.0.1:8009/api/v1';
+  }
 
   final dio = Dio(BaseOptions(
     baseUrl: baseUrl,

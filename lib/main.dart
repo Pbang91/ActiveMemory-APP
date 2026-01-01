@@ -1,5 +1,5 @@
 import 'package:active_memory/common/config/kakao_init.dart';
-import 'package:active_memory/home_screen.dart';
+import 'package:active_memory/features/reference/presentation/screen/reference_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +24,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Active Memory',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const HomeScreen(),
+      home: const ReferenceScreen(),
     );
   }
 }

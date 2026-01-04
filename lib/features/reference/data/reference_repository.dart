@@ -1,4 +1,4 @@
-import 'package:active_memory/common/dio_client.dart';
+import 'package:active_memory/common/network/dio_client.dart';
 import 'package:active_memory/features/reference/data/reference_api.dart';
 import 'package:active_memory/features/reference/domain/body_part.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

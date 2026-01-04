@@ -1,4 +1,4 @@
-import 'package:active_memory/features/reference/presentation/providers/body_part_provider.dart';
+import 'package:active_memory/features/reference/presentation/view_models/body_part_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

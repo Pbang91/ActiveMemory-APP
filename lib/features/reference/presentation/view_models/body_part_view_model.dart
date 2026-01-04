@@ -3,7 +3,7 @@ import 'package:active_memory/features/reference/domain/body_part.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'body_part_provider.g.dart';
+part 'body_part_view_model.g.dart';
 
 @riverpod
 Future<List<BodyPart>> bodyParts(Ref ref) {

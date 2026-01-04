@@ -1,5 +1,5 @@
 import 'package:active_memory/common/config/kakao_init.dart';
-import 'package:active_memory/features/reference/presentation/screen/reference_screen.dart';
+import 'package:active_memory/common/router/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,15 +16,17 @@ Future<void> main() async {
   runApp(const ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+
+    return MaterialApp.router(
       title: 'Active Memory',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const ReferenceScreen(),
+      routerConfig: router,
     );
   }
 }

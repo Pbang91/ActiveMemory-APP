@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'reference_api.dart';
+part of 'user_api.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'reference_api.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _ReferenceApi implements ReferenceApi {
-  _ReferenceApi(
+class _UserApi implements UserApi {
+  _UserApi(
     this._dio, {
     this.baseUrl,
   });
@@ -19,20 +19,21 @@ class _ReferenceApi implements ReferenceApi {
   String? baseUrl;
 
   @override
-  Future<List<BodyPart>> getBodyParts() async {
+  Future<BaseResponse<RegisterResponse>> register(RegisterRequest body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _result =
-        await _dio.fetch<List<dynamic>>(_setStreamType<List<BodyPart>>(Options(
-      method: 'GET',
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<BaseResponse<RegisterResponse>>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/references/body-parts',
+              '/users',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -41,9 +42,10 @@ class _ReferenceApi implements ReferenceApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    var value = _result.data!
-        .map((dynamic i) => BodyPart.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = BaseResponse<RegisterResponse>.fromJson(
+      _result.data!,
+      (json) => RegisterResponse.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 

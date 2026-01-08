@@ -1,31 +1,42 @@
+import 'package:active_memory/features/accounts/auth/presentation/view_models/auth_view_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_interceptor.g.dart';
 
 @riverpod
 AuthInterceptor authInterceptor(Ref ref) {
-  return AuthInterceptor(ref);
+  final storage = ref.watch(storageProvider);
+  return AuthInterceptor(storage, ref);
 }
 
 class AuthInterceptor extends Interceptor {
+  final FlutterSecureStorage _storage;
   final Ref _ref;
 
-  AuthInterceptor(this._ref);
+  AuthInterceptor(this._storage, this._ref);
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    /**
-     * TODO: flutter_secure_storage에서 토큰 꺼내는 코드
-     * final token = await storage.read(...);
-     * if (token != null) options.headers['Authorization'] = 'Bearer $toekn';
-     */
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    if (options.headers['requiresToken'] == false) {
+      options.headers.remove('requiresToken');
 
-    debugPrint("Request Auth Path: ${options.path}");
+      return handler.next(options);
+    }
 
-    super.onRequest(options, handler);
+    final accessToken = await _storage.read(key: 'accessToken');
+
+    if (accessToken != null) {
+      options.headers['Authorization'] = 'Bearer $accessToken';
+    }
+
+    return handler.next(options);
   }
 
   @override

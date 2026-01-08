@@ -1,4 +1,5 @@
-import 'package:active_memory/features/accounts/user/presentation/screen/login_screen.dart';
+import 'package:active_memory/features/accounts/auth/presentation/screen/login_screen.dart';
+import 'package:active_memory/features/accounts/auth/presentation/view_models/auth_view_model.dart';
 import 'package:active_memory/features/accounts/user/presentation/screen/sign_up_screen.dart';
 import 'package:active_memory/features/reference/presentation/screen/reference_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +13,11 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @riverpod
 GoRouter router(Ref ref) {
-  // TODO: 인증 상태 구독(Auth Provider)
-
-  const isLoggedIn = false; // 임시
+  final authState = ref.watch(authViewModelProvider);
 
   return GoRouter(
       navigatorKey: rootNavigatorKey,
-      initialLocation: '/login',
+      initialLocation: '/home',
       routes: [
         GoRoute(
           path: '/login',
@@ -34,7 +33,16 @@ GoRouter router(Ref ref) {
         )
       ],
       redirect: (context, state) {
+        // 로딩 중이라면 판단 보류
+        if (authState.isLoading || authState.hasError) return null;
+
+        // 현재 진입하려는 목적지
         final String location = state.uri.toString();
+
+        // 로그인 여부 판단
+        final bool isLoggedIn = authState.valueOrNull != null;
+
+        // 로그인이나 회원가입이라면
         final bool isLoggingIn = location == '/login' || location == '/signup';
 
         // 로그인 안했는데, 홈으로 가려고 한다면 로그인 화면으로

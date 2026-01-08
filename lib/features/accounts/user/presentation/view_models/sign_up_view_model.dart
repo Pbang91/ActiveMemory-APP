@@ -1,3 +1,4 @@
+import 'package:active_memory/features/accounts/auth/presentation/view_models/auth_view_model.dart';
 import 'package:active_memory/features/accounts/user/data/user_repository.dart';
 import 'package:active_memory/features/accounts/user/domain/command/register_command.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -31,12 +32,13 @@ class SignUpViewModel extends _$SignUpViewModel {
       );
 
       // Repository Interface 호출 -> impl이 받아줌
-      final userId = await ref.read(userRepositoryProvider).register(command);
+      await ref.read(userRepositoryProvider).register(command);
 
-      // TODO: [자동 로그인] 여기에 AuthRepository.login() 호출 추가 예정
-      // await ref.read(authRepositoryProvider).login(email, password);
-
-      // 로그인이 성공하면 AuthProvider 상태가 변하고, Router가 알아서 페이지를 이동시킵니다.
+      await ref.read(authViewModelProvider.notifier).login(
+            authType: 'EMAIL',
+            email: email,
+            password: password,
+          );
     });
   }
 }

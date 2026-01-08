@@ -1,4 +1,5 @@
 import 'package:active_memory/common/network/base_response.dart';
+import 'package:active_memory/features/accounts/user/data/dto/get_me_response.dart';
 import 'package:active_memory/features/accounts/user/data/dto/register_request.dart';
 import 'package:active_memory/features/accounts/user/data/dto/register_response.dart';
 import 'package:dio/dio.dart';
@@ -12,4 +13,7 @@ abstract class UserApi {
 
   @POST('/users')
   Future<BaseResponse<RegisterResponse>> register(@Body() RegisterRequest body);
+
+  @GET('/users/me')
+  Future<BaseResponse<GetMeResponse>> getMe();
 }

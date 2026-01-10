@@ -30,4 +30,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
     return response.data.toModel();
   }
+
+  @override
+  Future<void> logout() async {
+    await _api.logout();
+  }
 }

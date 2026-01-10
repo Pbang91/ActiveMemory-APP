@@ -3,4 +3,5 @@ import 'package:active_memory/features/accounts/auth/domain/model/auth_token.dar
 
 abstract class AuthRepository {
   Future<AuthToken> login(LoginCommand command);
+  Future<void> logout();
 }

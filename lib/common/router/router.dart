@@ -1,4 +1,4 @@
-import 'package:active_memory/common/presentation/main_screen.dart';
+import 'package:active_memory/common/screen/main_screen.dart';
 import 'package:active_memory/features/accounts/auth/presentation/screen/login_screen.dart';
 import 'package:active_memory/features/accounts/auth/presentation/view_models/auth_view_model.dart';
 import 'package:active_memory/features/accounts/user/presentation/screen/my_page_screen.dart';

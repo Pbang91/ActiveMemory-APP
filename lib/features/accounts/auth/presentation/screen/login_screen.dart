@@ -1,3 +1,4 @@
+import 'package:active_memory/common/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('로그인 실패: ${next.error}'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -70,13 +71,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   // 로고 영역
                   const Icon(Icons.fitness_center,
-                      size: 80, color: Colors.blue),
+                      size: 80, color: AppColors.primary),
                   const SizedBox(height: 16),
                   Text(
                     "Active Memory",
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: Theme.of(context).textTheme.headlineMedium,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
@@ -87,15 +86,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     decoration: const InputDecoration(
                       labelText: '이메일',
                       prefixIcon: Icon(Icons.email_outlined),
-                      border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '이메일을 입력해주세요.';
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        (value == null || value.isEmpty) ? '이메일을 입력해주세요' : null,
                   ),
                   const SizedBox(height: 16),
 
@@ -105,27 +99,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     decoration: const InputDecoration(
                       labelText: '비밀번호',
                       prefixIcon: Icon(Icons.lock_outline),
-                      border: OutlineInputBorder(),
                     ),
                     obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '비밀번호를 입력해주세요.';
-                      }
-                      return null;
-                    },
+                    validator: (value) => (value == null || value.isEmpty)
+                        ? '비밀번호를 입력해주세요'
+                        : null,
                   ),
                   const SizedBox(height: 24),
 
                   // 로그인 버튼 (로딩 처리 포함)
                   ElevatedButton(
                     onPressed: isLoading ? null : _onSubmit, // 로딩 중이면 클릭 방지
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
                     child: isLoading
                         ? const SizedBox(
                             height: 20,
@@ -135,42 +119,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text(
-                            "로그인",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
+                        : const Text("로그인"),
                   ),
                   const SizedBox(height: 32),
 
-                  // Divider (기존 코드 유지)
+                  // Divider
                   const Row(
                     children: [
                       Expanded(child: Divider()),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Text("SNS 계정으로 로그인",
-                            style: TextStyle(color: Colors.grey)),
+                            style: TextStyle(color: AppColors.textSecondary)),
                       ),
                       Expanded(child: Divider()),
                     ],
                   ),
                   const SizedBox(height: 24),
 
-                  // Social Buttons (기존 코드 유지 - 나중에 기능 연결)
+                  // TODO: Social 기능 연결
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _SocialButton(
                         icon: Icons.chat_bubble,
-                        color: Colors.yellow,
+                        color: const Color(0xFFFEE500),
                         onTap: () {},
                       ),
                       const SizedBox(width: 20),
                       _SocialButton(
                         icon: Icons.g_mobiledata,
                         color: Colors.white,
-                        borderColor: Colors.grey,
+                        borderColor: Colors.grey.shade300,
                         onTap: () {},
                       ),
                     ],
@@ -183,11 +163,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       const Text("계정이 없으신가요?"),
                       TextButton(
-                        onPressed: () {
-                          // 회원가입 화면으로 이동
-                          context.push('/signup');
-                        },
-                        child: const Text("회원가입"),
+                        onPressed: () => context.push('/signup'),
+                        child: const Text(
+                          "회원가입",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
@@ -219,6 +199,7 @@ class _SocialButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(50),
       child: Container(
         width: 50,
         height: 50,
@@ -228,13 +209,17 @@ class _SocialButton extends StatelessWidget {
           border: borderColor != null ? Border.all(color: borderColor!) : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withOpacity(0.5),
               blurRadius: 5,
               offset: const Offset(0, 2),
             ),
           ],
         ),
-        child: Icon(icon, color: Colors.black87),
+        child: Icon(
+          icon,
+          color: Colors.black87,
+          size: 24,
+        ),
       ),
     );
   }

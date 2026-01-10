@@ -1,7 +1,7 @@
+import 'package:active_memory/common/theme/app_colors.dart';
 import 'package:active_memory/features/accounts/user/presentation/view_models/sign_up_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -19,6 +19,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _passwordController = TextEditingController();
   final _nicknameController = TextEditingController();
   final _bioController = TextEditingController();
+
+  bool _isPasswordVisible = false;
 
   // 3. 리소스 정리
   @override
@@ -38,16 +40,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       // 키보드 내리기
       FocusScope.of(context).unfocus();
 
-      final email = _emailController.text;
-      final password = _passwordController.text;
-      final nickname = _nicknameController.text;
-      final bio = _bioController.text;
-
       ref.read(signUpViewModelProvider.notifier).signUp(
-            email: email,
-            password: password,
-            nickname: nickname,
-            bio: bio.isEmpty ? null : bio,
+            email: _emailController.text,
+            password: _passwordController.text,
+            nickname: _nicknameController.text,
+            bio: _bioController.text.isEmpty ? null : _bioController.text,
           );
     }
   }
@@ -57,10 +54,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("회원가입"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(), // 뒤로가기 (로그인 화면으로)
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -70,9 +63,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
+                Text(
                   "계정을 생성하고\nActive Memory를 시작하세요!",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: AppColors.textPrimary, // 명시적 컬러 지정
+                        height: 1.3, // 줄 간격
+                      ),
                 ),
                 const SizedBox(height: 32),
 
@@ -83,7 +79,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     labelText: '이메일',
                     hintText: 'example@email.com',
                     prefixIcon: Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
@@ -101,12 +96,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 // 2. 비밀번호 입력
                 TextFormField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
-                    labelText: '비밀번호',
-                    prefixIcon: Icon(Icons.lock_outline),
-                    border: OutlineInputBorder(),
-                  ),
-                  obscureText: true,
+                  decoration: InputDecoration(
+                      labelText: '비밀번호',
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          })),
+                  obscureText: !_isPasswordVisible,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return '비밀번호를 입력해주세요.';
@@ -123,7 +128,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     labelText: '닉네임',
                     hintText: '최대 20글자',
                     prefixIcon: Icon(Icons.person_outline),
-                    border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -144,7 +148,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   decoration: const InputDecoration(
                     labelText: '한줄 소개 (선택)',
                     prefixIcon: Icon(Icons.description_outlined),
-                    border: OutlineInputBorder(),
                   ),
                   maxLines: 3,
                 ),
@@ -153,14 +156,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 // 5. 가입 버튼
                 ElevatedButton(
                   onPressed: _onSubmit,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                  ),
                   child: const Text(
                     "가입하기",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

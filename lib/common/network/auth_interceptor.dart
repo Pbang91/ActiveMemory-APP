@@ -1,6 +1,9 @@
+import 'package:active_memory/features/accounts/auth/data/auth_api.dart';
+import 'package:active_memory/features/accounts/auth/data/dto/re_issue_request.dart';
 import 'package:active_memory/features/accounts/auth/presentation/view_models/auth_view_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -48,15 +51,74 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
+  void onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     // Dio 5.0부터는 DioError가 아니라 'DioException'
-    // TODO: 401 에러뜨면 토큰 재발급 로직 수행
-    debugPrint("🚨 [AuthInterceptor] 에러 발생: ${err.message}");
 
-    if (err.response?.statusCode == 401) {
-      debugPrint("🔄 토큰 만료! 재발급 시도 예정...");
+    // 1. 로그아웃 요청 자체가 401이 난거라면
+    // 이미 만료된 내용이니깐 재시도하거나 또 강제 로그아웃을 부르면 안됨(무한 루프 방지)
+    if (err.requestOptions.path.contains("/auth/logout")) {
+      return handler.next(err);
     }
 
-    super.onError(err, handler);
+    // 2. 401 에러가 아니면 넘겨서 맡기기
+    if (err.response?.statusCode != 401) {
+      return handler.next(err);
+    }
+
+    final isRetry = err.requestOptions.extra.containsKey('isRetry');
+
+    if (isRetry) {
+      // 재시도한적 있으면 로그아웃 - 무한루프 방지
+      await _forceLogout();
+      return handler.next(err);
+    }
+
+    final refreshToken = await _storage.read(key: 'refreshToken');
+
+    if (refreshToken == null) {
+      // 리프레시 토큰 없으면 로그아웃
+      await _forceLogout();
+      return handler.next(err);
+    }
+
+    try {
+      final refreshDio = Dio(BaseOptions(
+          baseUrl: dotenv.env['API_URL'] ?? 'http://localhost:8080/api/v1',
+          headers: {
+            'Content-Type': 'application/json',
+          }));
+
+      final authApi = AuthApi(refreshDio);
+
+      final response =
+          await authApi.reIssue(ReIssueRequest(refreshToken: refreshToken));
+      final newAccssToken = response.data.accessToken;
+      final newRefreshToken = response.data.refreshToken;
+
+      await _storage.write(key: 'accessToken', value: newAccssToken);
+      await _storage.write(key: 'refreshToken', value: newRefreshToken);
+
+      // 원래 요청 재시도
+      final options = err.requestOptions;
+
+      options.headers['Authorization'] = 'Bearer $newAccssToken';
+      options.extra['isRetry'] = true;
+
+      // 재용용 Dio는 그냥 Dio로 진행
+      final retryResponse = await Dio().fetch(options);
+      return handler.resolve(retryResponse);
+    } catch (e) {
+      await _forceLogout();
+      return handler.next(err);
+    }
+  }
+
+  Future<void> _forceLogout() async {
+    await _storage.deleteAll();
+
+    _ref.read(authViewModelProvider.notifier).logout();
   }
 }

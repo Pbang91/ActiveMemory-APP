@@ -58,6 +58,12 @@ class AuthViewModel extends _$AuthViewModel {
   }
 
   Future<void> logout() async {
+    try {
+      await ref.read(authRepositoryProvider).logout();
+    } catch (e) {
+      // 여기선 뭐하지?
+    }
+
     final storage = ref.read(storageProvider);
     await storage.deleteAll();
 

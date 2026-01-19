@@ -1,5 +1,6 @@
-import 'package:active_memory/common/config/kakao_init.dart';
-import 'package:active_memory/common/router/router.dart';
+import 'package:active_memory/src/common/config/kakao_init.dart';
+import 'package:active_memory/src/common/router/router.dart';
+import 'package:active_memory/src/common/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,8 @@ class MainApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'Active Memory',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
       routerConfig: router,
     );
   }

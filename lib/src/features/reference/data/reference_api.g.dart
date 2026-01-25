@@ -19,20 +19,20 @@ class _ReferenceApi implements ReferenceApi {
   String? baseUrl;
 
   @override
-  Future<List<BodyPart>> getBodyParts() async {
+  Future<BaseResponse<List<GetExerciseResponse>>> getExercies() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result =
-        await _dio.fetch<List<dynamic>>(_setStreamType<List<BodyPart>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<BaseResponse<List<GetExerciseResponse>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/references/body-parts',
+              '/references/exercises',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -41,9 +41,15 @@ class _ReferenceApi implements ReferenceApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    var value = _result.data!
-        .map((dynamic i) => BodyPart.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = BaseResponse<List<GetExerciseResponse>>.fromJson(
+      _result.data!,
+      (json) => json is List<dynamic>
+          ? json
+              .map<GetExerciseResponse>((i) =>
+                  GetExerciseResponse.fromJson(i as Map<String, dynamic>))
+              .toList()
+          : List.empty(),
+    );
     return value;
   }
 

@@ -60,7 +60,6 @@ class ReferenceViewModel extends StateNotifier<ReferenceState> {
       );
     } catch (e) {
       // 에러 처리 (실무에선 Toast나 Snackbar 처리 필요)
-      print("운동 데이터 로드 실패: $e");
       state = state
           .copyWith(isLoading: false, allExercises: [], filteredExercises: []);
     }

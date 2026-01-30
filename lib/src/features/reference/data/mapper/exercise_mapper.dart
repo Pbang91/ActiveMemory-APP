@@ -6,10 +6,11 @@ extension GetExerciseResponseMapper on GetExerciseResponse {
     return StandardExercise(
       id: id,
       name: name,
-      description: description,
+      description: description ?? '',
       bodyPartName: bodyPart.name,
       bodyPartCode: bodyPart.code,
       equipmentName: exerciseType.koName,
+      targetMuscles: muscles?.map((m) => m.name).toList() ?? [],
     );
   }
 }

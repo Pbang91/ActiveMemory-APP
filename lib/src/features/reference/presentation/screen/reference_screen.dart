@@ -1,5 +1,6 @@
 import 'package:active_memory/src/common/widget/common_message_view.dart';
 import 'package:active_memory/src/features/reference/domain/entity/exercise.dart';
+import 'package:active_memory/src/features/reference/presentation/screen/exercise_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,126 +38,116 @@ class _ReferenceScreenState extends ConsumerState<ReferenceScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(referenceViewModelProvider);
+    final notifier = ref.read(referenceViewModelProvider.notifier);
 
     return Scaffold(
-      // [Theme] 배경색 자동 적용 (AppColors.background)
-      appBar: AppBar(
-        title: const Text("Reference"),
-      ),
-      body: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                // 1. 검색바
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (value) => ref
-                        .read(referenceViewModelProvider.notifier)
-                        .search(value),
-                    decoration: InputDecoration(
-                      hintText: "운동 이름 검색",
-                      hintStyle:
-                          const TextStyle(color: AppColors.textSecondary),
-                      prefixIcon:
-                          const Icon(Icons.search, color: AppColors.primary),
-                      filled: true,
-                      fillColor: AppColors.surface, // 흰색 배경
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        // [Theme] 배경색 자동 적용 (AppColors.background)
+        appBar: AppBar(title: const Text("Reference")),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await notifier.loadExercises();
+          },
+          child: state.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    // 1. 검색바
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (value) => ref
+                            .read(referenceViewModelProvider.notifier)
+                            .search(value),
+                        decoration: InputDecoration(
+                          hintText: "운동 이름 검색",
+                          hintStyle:
+                              const TextStyle(color: AppColors.textSecondary),
+                          prefixIcon: const Icon(Icons.search,
+                              color: AppColors.primary),
+                          filled: true,
+                          fillColor: AppColors.surface, // 흰색 배경
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 12),
 
-                      // 둥근 스타일 (Pill Shape)
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                            color: AppColors.primary, width: 1.5),
+                          // 둥근 스타일 (Pill Shape)
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: const BorderSide(
+                                color: AppColors.primary, width: 1.5),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                // 2. 대분류 탭 (가로 스크롤)
-                SizedBox(
-                  height: 36,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: _bodyParts.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 8),
-                    itemBuilder: (context, index) {
-                      final part = _bodyParts[index];
-                      final isSelected = state.selectedBodyPart == part['code'];
+                    // 2. 대분류 탭 (가로 스크롤)
+                    SizedBox(
+                      height: 36,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        itemCount: _bodyParts.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          final part = _bodyParts[index];
+                          final isSelected =
+                              state.selectedBodyPart == part['code'];
 
-                      return GestureDetector(
-                        onTap: () {
-                          ref
-                              .read(referenceViewModelProvider.notifier)
-                              .selectBodyPart(part['code']!);
+                          return GestureDetector(
+                            onTap: () {
+                              ref
+                                  .read(referenceViewModelProvider.notifier)
+                                  .selectBodyPart(part['code']!);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : AppColors.surface,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : Colors.grey.shade200,
+                                ),
+                              ),
+                              child: Text(
+                                part['name']!,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : AppColors.textSecondary,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          );
                         },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? AppColors.primary
-                                : AppColors.surface,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isSelected
-                                  ? Colors.transparent
-                                  : Colors.grey.shade200,
-                            ),
-                          ),
-                          child: Text(
-                            part['name']!,
-                            style: TextStyle(
-                              color: isSelected
-                                  ? Colors.white
-                                  : AppColors.textSecondary,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.w500,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    ),
 
-                const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                // 3. 운동 리스트
-                Expanded(
-                  child: state.filteredExercises.isEmpty
-                      ? const CommonMessageView(
-                          message: "검색 결과가 없습니다.",
-                          icon: Icons.search_off,
-                        )
-                      : ListView.separated(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          itemCount: state.filteredExercises.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 12),
-                          itemBuilder: (context, index) {
-                            final exercise = state.filteredExercises[index];
-                            return _buildExerciseCard(context, exercise);
-                          },
-                        ),
+                    // 3. 운동 리스트
+                    Expanded(
+                      child: _buildListContent(state, notifier),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-    );
+        ));
   }
 
   // 운동 카드 아이템
@@ -178,7 +169,13 @@ class _ReferenceScreenState extends ConsumerState<ReferenceScreen> {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
-            // TODO: 상세 바텀시트 호출 (exercise.id 사용)
+            showModalBottomSheet<void>(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              useSafeArea: true,
+              builder: (context) => ExerciseDetailScreen(exercise: exercise),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -232,6 +229,41 @@ class _ReferenceScreenState extends ConsumerState<ReferenceScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildListContent(ReferenceState state, ReferenceViewModel notifier) {
+    // Case A: 아예 원본 데이터 로드에 실패한 경우 (또는 DB가 텅 빔)
+    if (state.allExercises.isEmpty) {
+      return CommonMessageView(
+        message: "데이터를 불러오지 못했어요.\n인터넷 연결을 확인해주세요.",
+        icon: Icons.wifi_off,
+        retryText: "다시 불러오기",
+        onRetry: () {
+          //실패 시 재시도 버튼 연결
+          notifier.loadExercises();
+        },
+      );
+    }
+
+    // Case B: 데이터는 있는데 필터/검색 결과가 없는 경우
+    if (state.filteredExercises.isEmpty) {
+      return const CommonMessageView(
+        message: "검색 결과가 없습니다.",
+        icon: Icons.search_off,
+      );
+    }
+
+    // Case C: 정상 출력
+    return ListView.separated(
+      // RefreshIndicator가 작동하려면 스크롤 뷰가 항상 스크롤 가능해야 함
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      itemCount: state.filteredExercises.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        return _buildExerciseCard(context, state.filteredExercises[index]);
+      },
     );
   }
 }

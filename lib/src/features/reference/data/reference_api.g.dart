@@ -32,7 +32,7 @@ class _ReferenceApi implements ReferenceApi {
     )
             .compose(
               _dio.options,
-              '/references/exercises',
+              '/references/exercise',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -47,6 +47,41 @@ class _ReferenceApi implements ReferenceApi {
           ? json
               .map<GetExerciseResponse>((i) =>
                   GetExerciseResponse.fromJson(i as Map<String, dynamic>))
+              .toList()
+          : List.empty(),
+    );
+    return value;
+  }
+
+  @override
+  Future<BaseResponse<List<GetGymResponse>>> getGymList(String q) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'q': q};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<BaseResponse<List<GetGymResponse>>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/references/gym',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = BaseResponse<List<GetGymResponse>>.fromJson(
+      _result.data!,
+      (json) => json is List<dynamic>
+          ? json
+              .map<GetGymResponse>(
+                  (i) => GetGymResponse.fromJson(i as Map<String, dynamic>))
               .toList()
           : List.empty(),
     );

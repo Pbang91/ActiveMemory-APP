@@ -1,4 +1,4 @@
-import 'package:active_memory/src/features/reference/domain/entity/exercise.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/exercise.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/theme/app_colors.dart';

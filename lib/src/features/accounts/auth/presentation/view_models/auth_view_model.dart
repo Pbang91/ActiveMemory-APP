@@ -1,7 +1,9 @@
+import 'package:active_memory/src/common/network/custom_exception.dart';
 import 'package:active_memory/src/features/accounts/auth/data/auth_repository.dart';
 import 'package:active_memory/src/features/accounts/auth/domain/command/login_command.dart';
 import 'package:active_memory/src/features/accounts/user/data/user_repository.dart';
 import 'package:active_memory/src/features/accounts/user/domain/entity/user.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -38,22 +40,30 @@ class AuthViewModel extends _$AuthViewModel {
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
-      final command = LoginCommand(
-        authType: authType,
-        email: email,
-        password: password,
-        token: token,
-      );
+      try {
+        final command = LoginCommand(
+          authType: authType,
+          email: email,
+          password: password,
+          token: token,
+        );
 
-      final tokens = await ref.read(authRepositoryProvider).login(command);
+        final tokens = await ref.read(authRepositoryProvider).login(command);
 
-      final storage = ref.read(storageProvider);
+        final storage = ref.read(storageProvider);
 
-      await storage.write(key: 'accessToken', value: tokens.accessToken);
-      await storage.write(key: 'refreshToken', value: tokens.refreshToken);
+        await storage.write(key: 'accessToken', value: tokens.accessToken);
+        await storage.write(key: 'refreshToken', value: tokens.refreshToken);
 
-      final user = await ref.read(userRepositoryProvider).getMe();
-      return user; // user가 state가 됨
+        final user = await ref.read(userRepositoryProvider).getMe();
+        return user; // user가 state가 됨
+      } catch (e, st) {
+        if (e is DioException && e.error is CustomException) {
+          state = AsyncValue.error(e.error as CustomException, st);
+        } else {
+          state = AsyncValue.error(e, st);
+        }
+      }
     });
   }
 

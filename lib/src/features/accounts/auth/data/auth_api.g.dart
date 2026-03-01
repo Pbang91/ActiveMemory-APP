@@ -19,14 +19,14 @@ class _AuthApi implements AuthApi {
   String? baseUrl;
 
   @override
-  Future<BaseResponse<LoginResponse>> login(LoginRequest request) async {
+  Future<SuccessResponse<LoginResponse>> login(LoginRequest request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<BaseResponse<LoginResponse>>(Options(
+        _setStreamType<SuccessResponse<LoginResponse>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -42,7 +42,7 @@ class _AuthApi implements AuthApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = BaseResponse<LoginResponse>.fromJson(
+    final value = SuccessResponse<LoginResponse>.fromJson(
       _result.data!,
       (json) => LoginResponse.fromJson(json as Map<String, dynamic>),
     );
@@ -74,14 +74,14 @@ class _AuthApi implements AuthApi {
   }
 
   @override
-  Future<BaseResponse<LoginResponse>> reIssue(ReIssueRequest request) async {
+  Future<SuccessResponse<LoginResponse>> reIssue(ReIssueRequest request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<BaseResponse<LoginResponse>>(Options(
+        _setStreamType<SuccessResponse<LoginResponse>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -97,7 +97,7 @@ class _AuthApi implements AuthApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = BaseResponse<LoginResponse>.fromJson(
+    final value = SuccessResponse<LoginResponse>.fromJson(
       _result.data!,
       (json) => LoginResponse.fromJson(json as Map<String, dynamic>),
     );

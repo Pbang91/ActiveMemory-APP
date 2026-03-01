@@ -9,15 +9,6 @@
       "args": [
         "--dart-define", "ENV=dev"
       ]
-    },
-    {
-      "name": "prod",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/main.dart",
-      "args": [
-        "--dart-define", "ENV=prod"
-      ]
     }
   ]
 }

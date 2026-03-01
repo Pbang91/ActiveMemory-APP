@@ -1,6 +1,6 @@
 import 'package:active_memory/src/features/reference/data/reference_repository.dart';
-import 'package:active_memory/src/features/reference/domain/entity/exercise.dart';
-import 'package:active_memory/src/features/reference/domain/repository/reference_repository.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/exercise.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/repository/exercise_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 1. State: UI 상태 관리
@@ -38,7 +38,7 @@ class ReferenceState {
 
 // 2. ViewModel: 비즈니스 로직
 class ReferenceViewModel extends StateNotifier<ReferenceState> {
-  final ReferenceRepository _repository;
+  final ExerciseRepository _repository;
 
   ReferenceViewModel(this._repository) : super(ReferenceState()) {
     loadExercises(); // 생성 시 데이터 로드

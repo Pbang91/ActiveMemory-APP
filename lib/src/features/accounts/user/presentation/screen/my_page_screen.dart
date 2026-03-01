@@ -1,4 +1,6 @@
+import 'package:active_memory/src/common/theme/app_colors.dart';
 import 'package:active_memory/src/features/accounts/auth/presentation/view_models/auth_view_model.dart';
+import 'package:active_memory/src/features/inventory/presentation/screen/my_gym_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -113,6 +115,16 @@ class MyPageScreen extends ConsumerWidget {
               title: "내 활동 기록",
               onTap: () {},
             ),
+            _buildMenuTile(
+                icon: Icons.fitness_center,
+                title: "내 체육관 관리",
+                iconColor: AppColors.primary,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const MyGymListScreen()));
+                }),
 
             const Divider(height: 40, thickness: 1),
 

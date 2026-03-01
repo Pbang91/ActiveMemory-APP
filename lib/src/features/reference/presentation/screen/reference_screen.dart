@@ -1,5 +1,5 @@
 import 'package:active_memory/src/common/widget/common_message_view.dart';
-import 'package:active_memory/src/features/reference/domain/entity/exercise.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/exercise.dart';
 import 'package:active_memory/src/features/reference/presentation/screen/exercise_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

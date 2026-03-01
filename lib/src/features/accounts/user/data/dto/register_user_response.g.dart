@@ -1,17 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'register_response.dart';
+part of 'register_user_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-RegisterResponse _$RegisterResponseFromJson(Map<String, dynamic> json) =>
-    RegisterResponse(
+RegisterUserResponse _$RegisterUserResponseFromJson(
+        Map<String, dynamic> json) =>
+    RegisterUserResponse(
       userId: (json['userId'] as num).toInt(),
     );
 
-Map<String, dynamic> _$RegisterResponseToJson(RegisterResponse instance) =>
+Map<String, dynamic> _$RegisterUserResponseToJson(
+        RegisterUserResponse instance) =>
     <String, dynamic>{
       'userId': instance.userId,
     };

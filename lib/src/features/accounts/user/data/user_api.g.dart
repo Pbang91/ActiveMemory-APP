@@ -19,14 +19,15 @@ class _UserApi implements UserApi {
   String? baseUrl;
 
   @override
-  Future<BaseResponse<RegisterResponse>> register(RegisterRequest body) async {
+  Future<SuccessResponse<RegisterUserResponse>> register(
+      RegisterUserRequest body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<BaseResponse<RegisterResponse>>(Options(
+        _setStreamType<SuccessResponse<RegisterUserResponse>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -42,21 +43,21 @@ class _UserApi implements UserApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = BaseResponse<RegisterResponse>.fromJson(
+    final value = SuccessResponse<RegisterUserResponse>.fromJson(
       _result.data!,
-      (json) => RegisterResponse.fromJson(json as Map<String, dynamic>),
+      (json) => RegisterUserResponse.fromJson(json as Map<String, dynamic>),
     );
     return value;
   }
 
   @override
-  Future<BaseResponse<GetMeResponse>> getMe() async {
+  Future<SuccessResponse<GetMeResponse>> getMe() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<BaseResponse<GetMeResponse>>(Options(
+        _setStreamType<SuccessResponse<GetMeResponse>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -72,7 +73,7 @@ class _UserApi implements UserApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = BaseResponse<GetMeResponse>.fromJson(
+    final value = SuccessResponse<GetMeResponse>.fromJson(
       _result.data!,
       (json) => GetMeResponse.fromJson(json as Map<String, dynamic>),
     );

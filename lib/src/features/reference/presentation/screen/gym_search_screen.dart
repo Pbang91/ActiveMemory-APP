@@ -1,3 +1,5 @@
+import 'package:active_memory/src/common/theme/app_colors.dart';
+import 'package:active_memory/src/features/inventory/presentation/view_models/inventory_command_view_model.dart';
 import 'package:active_memory/src/features/reference/presentation/view_models/gym_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,8 +16,11 @@ class _GymSearchScreenState extends ConsumerState<GymSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(gymSearchViewModelProvider);
-    final notifier = ref.read(gymSearchViewModelProvider.notifier);
+    final searchState = ref.watch(gymSearchViewModelProvider);
+    final searchNotifier = ref.read(gymSearchViewModelProvider.notifier);
+    final inventoryCommandState = ref.watch(inventoryCommandViewModelProvider);
+    final inventoryCommandNotifier =
+        ref.read(inventoryCommandViewModelProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -32,20 +37,21 @@ class _GymSearchScreenState extends ConsumerState<GymSearchScreen> {
                 hintText: "헬스장 이름 검색 (예: 에이블짐)",
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
-                  onPressed: () => notifier.search(_searchController.text),
+                  onPressed: () =>
+                      searchNotifier.search(_searchController.text),
                 ),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              onSubmitted: (value) => notifier.search(value),
+              onSubmitted: (value) => searchNotifier.search(value),
             ),
           ),
 
           // 2. 검색 결과 리스트
           Expanded(
-            child: state.isLoading
+            child: searchState.isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : state.gyms.isEmpty
+                : searchState.gyms.isEmpty
                     ? const Center(
                         child: Text(
                           '검색 결과가 없습니다',
@@ -56,10 +62,10 @@ class _GymSearchScreenState extends ConsumerState<GymSearchScreen> {
                         ),
                       )
                     : ListView.separated(
-                        itemCount: state.gyms.length,
+                        itemCount: searchState.gyms.length,
                         separatorBuilder: (_, __) => const Divider(),
                         itemBuilder: (context, index) {
-                          final gym = state.gyms[index];
+                          final gym = searchState.gyms[index];
                           return ListTile(
                             title: Text(
                               gym.name ?? '이름 없음',
@@ -70,13 +76,42 @@ class _GymSearchScreenState extends ConsumerState<GymSearchScreen> {
                             trailing: SizedBox(
                               width: 80,
                               child: ElevatedButton(
-                                onPressed: () async {
-                                  // 등록 로직 실행
-                                  // await notifier.registerGym(gym);
-                                  // if (context.mounted) {
-                                  //   Navigator.pop(context); // 등록 후 닫기
-                                  // }
-                                },
+                                onPressed: inventoryCommandState.isLoading
+                                    ? null
+                                    : () async {
+                                        try {
+                                          await inventoryCommandNotifier
+                                              .registerGym(
+                                                  providerId: gym.providerId,
+                                                  name: gym.name,
+                                                  address: gym.address,
+                                                  x: gym.latitude,
+                                                  y: gym.longitude);
+
+                                          // 등록 성공 처리 시
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                              content: Text('체육관 등록 성공'),
+                                              backgroundColor: Colors.green,
+                                            ));
+
+                                            // 이전 화면으로 돌아가기
+                                            Navigator.pop(context, true);
+                                          }
+                                        } catch (e) {
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(e.toString()),
+                                                backgroundColor:
+                                                    AppColors.error,
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      },
                                 child: const Text("선택"),
                               ),
                             ),

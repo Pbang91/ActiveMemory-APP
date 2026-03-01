@@ -13,18 +13,10 @@ part 'reference_repository.g.dart';
 
 // 1. API Client 빈 등록
 @riverpod
-ExerciseRepositoryImpl referenceRepository(Ref ref) {
+ExerciseRepository referenceRepository(Ref ref) {
   final dio = ref.watch(dioProvider);
   final api = ReferenceApi(dio);
   return ExerciseRepositoryImpl(api);
-}
-
-@riverpod
-GymRepositoryImpl gymRepository(Ref ref) {
-  final dio = ref.watch(dioProvider);
-  final api = ReferenceApi(dio);
-
-  return GymRepositoryImpl(api);
 }
 
 class ExerciseRepositoryImpl implements ExerciseRepository {
@@ -38,6 +30,14 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
 
     return response.data.map((dto) => dto.toEntity()).toList();
   }
+}
+
+@riverpod
+GymRepository gymRepository(Ref ref) {
+  final dio = ref.watch(dioProvider);
+  final api = ReferenceApi(dio);
+
+  return GymRepositoryImpl(api);
 }
 
 class GymRepositoryImpl implements GymRepository {

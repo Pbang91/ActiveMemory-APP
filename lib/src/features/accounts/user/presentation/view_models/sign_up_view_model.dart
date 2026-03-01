@@ -1,6 +1,6 @@
 import 'package:active_memory/src/features/accounts/auth/presentation/view_models/auth_view_model.dart';
 import 'package:active_memory/src/features/accounts/user/data/user_repository.dart';
-import 'package:active_memory/src/features/accounts/user/domain/command/register_command.dart';
+import 'package:active_memory/src/features/accounts/user/domain/command/register_user_command.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sign_up_view_model.g.dart';
@@ -24,7 +24,7 @@ class SignUpViewModel extends _$SignUpViewModel {
     // 2. API 호출
     state = await AsyncValue.guard(() async {
       // 순수 Domain 객체 생성
-      final command = RegisterCommand(
+      final command = RegisterUserCommand(
         email: email,
         password: password,
         nickname: nickname,

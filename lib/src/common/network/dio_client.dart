@@ -26,7 +26,7 @@ Dio dio(Ref ref) {
       connectTimeout: const Duration(seconds: 5),
       receiveTimeout: const Duration(seconds: 3),
       headers: {
-        'Contenty-Type': 'application/json',
+        'Content-Type': 'application/json',
         'Accept': 'application/json'
       }));
 

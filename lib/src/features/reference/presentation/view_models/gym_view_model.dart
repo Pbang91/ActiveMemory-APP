@@ -3,6 +3,12 @@ import 'package:active_memory/src/features/reference/domain/gym/entity/gym.dart'
 import 'package:active_memory/src/features/reference/domain/gym/repository/gym_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final gymSearchViewModelProvider =
+    StateNotifierProvider.autoDispose<GymSearchViewModel, GymSearchState>(
+        (ref) {
+  return GymSearchViewModel(ref.watch(gymRepositoryProvider));
+});
+
 // 상태: 검색 결과 리스트 & 로딩 상태
 class GymSearchState {
   final List<Gym> gyms;
@@ -46,9 +52,3 @@ class GymSearchViewModel extends StateNotifier<GymSearchState> {
     // 성공 후 로직 (화면 닫기 등은 UI에서 처리하거나 여기서 콜백 호출)
   }
 }
-
-final gymSearchViewModelProvider =
-    StateNotifierProvider.autoDispose<GymSearchViewModel, GymSearchState>(
-        (ref) {
-  return GymSearchViewModel(ref.watch(gymRepositoryProvider));
-});

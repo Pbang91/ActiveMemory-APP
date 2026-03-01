@@ -1,3 +1,5 @@
+import 'package:active_memory/src/features/inventory/domain/entity/my_gym.dart';
+import 'package:active_memory/src/features/inventory/presentation/view_models/my_gym_view_model.dart';
 import 'package:active_memory/src/features/reference/presentation/screen/gym_search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,48 +11,63 @@ class MyGymListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: ref.watch(myGymListViewModelProvider) 로 데이터 가져오기
-    final List<Map<String, String>> myGyms = [];
+    final myGymState = ref.watch(myGymViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("내 체육관"),
-      ),
-      // 체육관 추가 버튼 (Floating Action Button)
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // 검색 및 등록 화면으로 이동
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const GymSearchScreen()),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text("체육관 등록"),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-      ),
-      body: myGyms.isEmpty
-          ? const Center(
-              child: Text(
-                "등록된 체육관이 없습니다.\n아래 + 버튼을 눌러 추가해보세요!",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
-              ),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: myGyms.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final gym = myGyms[index];
-                return _buildGymCard(context, gym);
-              },
-            ),
-    );
+        appBar: AppBar(
+          title: const Text("내 체육관"),
+        ),
+        // 체육관 추가 버튼 (Floating Action Button)
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () async {
+            final isAdded = await Navigator.push<bool>(context,
+                MaterialPageRoute(builder: (_) => const GymSearchScreen()));
+
+            if (isAdded == true) {
+              ref.read(myGymViewModelProvider.notifier).refresh();
+            }
+          },
+          icon: const Icon(Icons.add),
+          label: const Text("체육관 등록"),
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+        ),
+        body: myGymState.when(
+            loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+            error: (error, stack) => Center(
+                  child: Text(
+                    '데이터를 불러오지 못했습니다.\n$error',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+            data: (myGyms) {
+              if (myGyms.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "등록된 체육관이 없습니다.\n아래 + 버튼을 눌러 추가해보세요!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: myGyms.length,
+                separatorBuilder: (_, __) => const SizedBox(
+                  height: 12,
+                ),
+                itemBuilder: (context, index) {
+                  final gym = myGyms[index];
+                  return _buildGymCard(context, gym);
+                },
+              );
+            }));
   }
 
-  Widget _buildGymCard(BuildContext context, Map<String, String> gym) {
+  Widget _buildGymCard(BuildContext context, MyGym myGym) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -84,20 +101,19 @@ class MyGymListScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  gym['nickname']!, // "회사 근처"
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  gym['name']!, // "에이블짐 역삼점"
+                  myGym.name, // "에이블짐 역삼점"
                   style: TextStyle(
                     color: Colors.grey.shade600,
                     fontSize: 14,
                   ),
                 ),
+                const SizedBox(width: 4),
+                Text(
+                  myGym.address,
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                )
               ],
             ),
           ),

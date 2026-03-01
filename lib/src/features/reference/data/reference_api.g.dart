@@ -19,13 +19,13 @@ class _ReferenceApi implements ReferenceApi {
   String? baseUrl;
 
   @override
-  Future<BaseResponse<List<GetExerciseResponse>>> getExercies() async {
+  Future<SuccessResponse<List<GetExerciseResponse>>> getExercies() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<BaseResponse<List<GetExerciseResponse>>>(Options(
+        _setStreamType<SuccessResponse<List<GetExerciseResponse>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -41,7 +41,7 @@ class _ReferenceApi implements ReferenceApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = BaseResponse<List<GetExerciseResponse>>.fromJson(
+    final value = SuccessResponse<List<GetExerciseResponse>>.fromJson(
       _result.data!,
       (json) => json is List<dynamic>
           ? json
@@ -54,13 +54,13 @@ class _ReferenceApi implements ReferenceApi {
   }
 
   @override
-  Future<BaseResponse<List<GetGymResponse>>> getGymList(String q) async {
+  Future<SuccessResponse<List<GetGymResponse>>> getGymList(String q) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'q': q};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<BaseResponse<List<GetGymResponse>>>(Options(
+        _setStreamType<SuccessResponse<List<GetGymResponse>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -76,7 +76,7 @@ class _ReferenceApi implements ReferenceApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = BaseResponse<List<GetGymResponse>>.fromJson(
+    final value = SuccessResponse<List<GetGymResponse>>.fromJson(
       _result.data!,
       (json) => json is List<dynamic>
           ? json

@@ -4,6 +4,7 @@ import 'package:active_memory/src/features/accounts/auth/data/mapper/auth_mapper
 import 'package:active_memory/src/features/accounts/auth/domain/command/login_command.dart';
 import 'package:active_memory/src/features/accounts/auth/domain/model/auth_token.dart';
 import 'package:active_memory/src/features/accounts/auth/domain/repository/auth_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -24,11 +25,22 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthToken> login(LoginCommand command) async {
-    final request = command.toDto();
+    try {
+      final request = command.toDto();
 
-    final response = await _api.login(request);
+      final response = await _api.login(request);
 
-    return response.data.toModel();
+      return response.data.toModel();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw Exception("서버 응답 지연. 잠시 후 재시도해주세요");
+      } else if (e.type == DioExceptionType.connectionError) {
+        throw Exception("인터넷 연결을 확인해주세요");
+      } else if (e.response != null) {}
+
+      throw Exception();
+    }
   }
 
   @override

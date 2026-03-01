@@ -1,7 +1,7 @@
 import 'package:active_memory/src/common/network/base_response.dart';
 import 'package:active_memory/src/features/accounts/user/data/dto/get_me_response.dart';
-import 'package:active_memory/src/features/accounts/user/data/dto/register_request.dart';
-import 'package:active_memory/src/features/accounts/user/data/dto/register_response.dart';
+import 'package:active_memory/src/features/accounts/user/data/dto/register_user_request.dart';
+import 'package:active_memory/src/features/accounts/user/data/dto/register_user_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
@@ -12,8 +12,9 @@ abstract class UserApi {
   factory UserApi(Dio dio) = _UserApi;
 
   @POST('/users')
-  Future<BaseResponse<RegisterResponse>> register(@Body() RegisterRequest body);
+  Future<SuccessResponse<RegisterUserResponse>> register(
+      @Body() RegisterUserRequest body);
 
   @GET('/users/me')
-  Future<BaseResponse<GetMeResponse>> getMe();
+  Future<SuccessResponse<GetMeResponse>> getMe();
 }

@@ -12,11 +12,12 @@ abstract class AuthApi {
   factory AuthApi(Dio dio) = _AuthApi;
 
   @POST('/auth/login')
-  Future<BaseResponse<LoginResponse>> login(@Body() LoginRequest request);
+  Future<SuccessResponse<LoginResponse>> login(@Body() LoginRequest request);
 
   @POST('/auth/logout')
   Future<void> logout();
 
   @POST('/auth/re-issue')
-  Future<BaseResponse<LoginResponse>> reIssue(@Body() ReIssueRequest request);
+  Future<SuccessResponse<LoginResponse>> reIssue(
+      @Body() ReIssueRequest request);
 }

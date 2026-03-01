@@ -1,11 +1,11 @@
 import 'package:active_memory/src/features/accounts/user/data/dto/get_me_response.dart';
-import 'package:active_memory/src/features/accounts/user/data/dto/register_request.dart';
-import 'package:active_memory/src/features/accounts/user/domain/command/register_command.dart';
+import 'package:active_memory/src/features/accounts/user/data/dto/register_user_request.dart';
+import 'package:active_memory/src/features/accounts/user/domain/command/register_user_command.dart';
 import 'package:active_memory/src/features/accounts/user/domain/entity/user.dart';
 
-extension RegisterCommandMapper on RegisterCommand {
-  RegisterRequest toDto() {
-    return RegisterRequest(
+extension RegisterCommandMapper on RegisterUserCommand {
+  RegisterUserRequest toDto() {
+    return RegisterUserRequest(
         email: email, password: password, nickname: nickname, bio: bio);
   }
 }

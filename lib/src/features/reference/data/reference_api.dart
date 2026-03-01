@@ -12,8 +12,9 @@ abstract class ReferenceApi {
   factory ReferenceApi(Dio dio) = _ReferenceApi;
 
   @GET('/references/exercise')
-  Future<BaseResponse<List<GetExerciseResponse>>> getExercies();
+  Future<SuccessResponse<List<GetExerciseResponse>>> getExercies();
 
   @GET('/references/gym')
-  Future<BaseResponse<List<GetGymResponse>>> getGymList(@Query("q") String q);
+  Future<SuccessResponse<List<GetGymResponse>>> getGymList(
+      @Query("q") String q);
 }

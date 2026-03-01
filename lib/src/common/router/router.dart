@@ -14,8 +14,6 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @riverpod
 GoRouter router(Ref ref) {
-  final authState = ref.watch(authViewModelProvider);
-
   return GoRouter(
       navigatorKey: rootNavigatorKey,
       initialLocation: '/home',
@@ -38,20 +36,26 @@ GoRouter router(Ref ref) {
         )
       ],
       redirect: (context, state) {
-        // 로딩 중이라면 판단 보류
-        if (authState.isLoading || authState.hasError) return null;
+        /**
+         * NOTE
+         * 에러가 발생했다면, 로그인이 실패한 것으로 "로그인 안 됨"으로 간주하고 로직 진행
+         */
 
         // 현재 진입하려는 목적지
         final String location = state.uri.toString();
 
         // 로그인 여부 판단
-        final bool isLoggedIn = authState.valueOrNull != null;
-
+        final bool isLoggedIn = ref.watch(
+            authViewModelProvider.select((state) => state.valueOrNull != null));
         // 로그인이나 회원가입이라면
         final bool isLoggingIn = location == '/login' || location == '/signup';
 
         // 로그인 안했는데, 홈으로 가려고 한다면 로그인 화면으로
-        if (!isLoggedIn && !isLoggingIn) {
+        if (!isLoggedIn) {
+          // 로그인, 회원가입 페이지로 진입하려는 거라면 가만히 넘김
+          if (isLoggingIn) return null;
+
+          // 그 외는 로그인 페이지로 강제 이동
           return '/login';
         }
 

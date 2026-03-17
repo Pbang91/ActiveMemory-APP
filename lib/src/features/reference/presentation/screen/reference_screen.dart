@@ -1,5 +1,5 @@
 import 'package:active_memory/src/common/widget/common_message_view.dart';
-import 'package:active_memory/src/features/reference/domain/exercise/entity/exercise.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/standard_exercise.dart';
 import 'package:active_memory/src/features/reference/presentation/screen/exercise_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,18 +16,6 @@ class ReferenceScreen extends ConsumerStatefulWidget {
 
 class _ReferenceScreenState extends ConsumerState<ReferenceScreen> {
   final TextEditingController _searchController = TextEditingController();
-
-  // 탭 데이터 (필터링용 UI 메타데이터)
-  // 실제로는 Meta API에서 받아올 수도 있지만, UI 탭 구성용으로 로컬 정의도 무방함
-  final List<Map<String, String>> _bodyParts = [
-    {'code': 'ALL', 'name': '전체'},
-    {'code': 'CHEST', 'name': '가슴'},
-    {'code': 'BACK', 'name': '등'},
-    {'code': 'LEG', 'name': '하체'},
-    {'code': 'SHOULDER', 'name': '어깨'},
-    {'code': 'ARM', 'name': '팔'},
-    {'code': 'ABS', 'name': '복근'},
-  ];
 
   @override
   void dispose() {
@@ -94,18 +82,23 @@ class _ReferenceScreenState extends ConsumerState<ReferenceScreen> {
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: _bodyParts.length,
+                        itemCount: state.bodyParts.length + 1,
                         separatorBuilder: (_, __) => const SizedBox(width: 8),
                         itemBuilder: (context, index) {
-                          final part = _bodyParts[index];
-                          final isSelected =
-                              state.selectedBodyPart == part['code'];
+                          final bool isAllTab = index == 0;
+
+                          final String code = isAllTab
+                              ? 'ALL'
+                              : state.bodyParts[index - 1].code;
+                          final String name =
+                              isAllTab ? '전체' : state.bodyParts[index - 1].name;
+                          final isSelected = state.selectedBodyPart == code;
 
                           return GestureDetector(
                             onTap: () {
                               ref
                                   .read(referenceViewModelProvider.notifier)
-                                  .selectBodyPart(part['code']!);
+                                  .selectBodyPart(code);
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -122,7 +115,7 @@ class _ReferenceScreenState extends ConsumerState<ReferenceScreen> {
                                 ),
                               ),
                               child: Text(
-                                part['name']!,
+                                name,
                                 style: TextStyle(
                                   color: isSelected
                                       ? Colors.white

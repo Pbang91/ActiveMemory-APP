@@ -17,4 +17,7 @@ abstract class ReferenceApi {
   @GET('/references/gym')
   Future<SuccessResponse<List<GetGymResponse>>> getGymList(
       @Query("q") String q);
+
+  @GET('/references/exercise/muscles')
+  Future<SuccessResponse<List<GetMuscleResponse>>> getMuscles();
 }

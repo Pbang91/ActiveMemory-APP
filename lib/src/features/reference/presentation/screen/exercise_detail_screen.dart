@@ -1,4 +1,4 @@
-import 'package:active_memory/src/features/reference/domain/exercise/entity/exercise.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/standard_exercise.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/theme/app_colors.dart';
@@ -137,8 +137,8 @@ class ExerciseDetailScreen extends StatelessWidget {
                           _buildChip(exercise.bodyPartName, isPrimary: true),
 
                           ...exercise.targetMuscles.map(
-                            (muscleName) =>
-                                _buildChip(muscleName, isPrimary: false),
+                            (muscle) =>
+                                _buildChip(muscle.name, isPrimary: false),
                           )
                         ],
                       ),

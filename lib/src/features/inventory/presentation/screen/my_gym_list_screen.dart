@@ -1,4 +1,5 @@
 import 'package:active_memory/src/features/inventory/domain/entity/my_gym.dart';
+import 'package:active_memory/src/features/inventory/presentation/screen/my_gym_detail_screen.dart';
 import 'package:active_memory/src/features/inventory/presentation/view_models/my_gym_view_model.dart';
 import 'package:active_memory/src/features/reference/presentation/screen/gym_search_screen.dart';
 import 'package:flutter/material.dart';
@@ -81,51 +82,71 @@ class MyGymListScreen extends ConsumerWidget {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          // 아이콘
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.fitness_center, color: AppColors.primary),
-          ),
-          const SizedBox(width: 16),
-
-          // 텍스트 정보
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => MyGymDetailScreen(
+                          gymId: myGym.myGymId,
+                          gymName: myGym.name,
+                        )));
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
               children: [
-                Text(
-                  myGym.name, // "에이블짐 역삼점"
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
+                // 아이콘
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.fitness_center,
+                      color: AppColors.primary),
+                ),
+                const SizedBox(width: 16),
+
+                // 텍스트 정보
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        myGym.name, // "에이블짐 역삼점"
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        myGym.address,
+                        style: TextStyle(
+                            color: Colors.grey.shade600, fontSize: 14),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    ],
                   ),
                 ),
-                const SizedBox(width: 4),
-                Text(
-                  myGym.address,
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                )
+
+                // 설정/삭제 메뉴
+                IconButton(
+                  icon: const Icon(Icons.more_vert, color: Colors.grey),
+                  onPressed: () {
+                    // TODO: 수정/삭제 바텀시트
+                  },
+                ),
               ],
             ),
           ),
-
-          // 설정/삭제 메뉴
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.grey),
-            onPressed: () {
-              // TODO: 수정/삭제 바텀시트
-            },
-          ),
-        ],
+        ),
       ),
     );
   }

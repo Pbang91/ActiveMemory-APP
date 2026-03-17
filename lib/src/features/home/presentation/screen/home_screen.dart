@@ -12,7 +12,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Active Memory"), // 로고 등
+        title: const Text("Active Memory"),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -26,26 +26,26 @@ class HomeScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 30),
 
-            // 2. 운동 요약 카드 (Workout Domain - Placeholder)
-            Container(
-              height: 150,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Center(child: Text("이번 주 운동 통계 그래프")),
-            ),
-            const SizedBox(height: 20),
+            // TODO: 2. 운동 요약 카드 (Workout Domain - Placeholder)
+            // Container(
+            //   height: 150,
+            //   width: double.infinity,
+            //   decoration: BoxDecoration(
+            //     color: Colors.blue.shade50,
+            //     borderRadius: BorderRadius.circular(16),
+            //   ),
+            //   child: const Center(child: Text("이번 주 운동 통계 그래프")),
+            // ),
+            // const SizedBox(height: 20),
 
-            // 3. 바로가기 메뉴
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildShortcut(Icons.play_arrow, "운동 시작"),
-                _buildShortcut(Icons.calendar_today, "루틴"),
-              ],
-            ),
+            // TODO: 3. 바로가기 메뉴
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //   children: [
+            //     _buildShortcut(Icons.play_arrow, "운동 시작"),
+            //     _buildShortcut(Icons.calendar_today, "루틴"),
+            //   ],
+            // ),
           ],
         ),
       ),

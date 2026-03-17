@@ -69,3 +69,15 @@ Map<String, dynamic> _$GetExerciseMuscleToJson(GetExerciseMuscle instance) =>
       'name': instance.name,
       'role': instance.role,
     };
+
+GetMuscleResponse _$GetMuscleResponseFromJson(Map<String, dynamic> json) =>
+    GetMuscleResponse(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+    );
+
+Map<String, dynamic> _$GetMuscleResponseToJson(GetMuscleResponse instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+    };

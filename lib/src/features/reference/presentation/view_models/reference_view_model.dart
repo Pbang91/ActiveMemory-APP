@@ -1,5 +1,6 @@
 import 'package:active_memory/src/features/reference/data/reference_repository.dart';
-import 'package:active_memory/src/features/reference/domain/exercise/entity/exercise.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/body_part.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/standard_exercise.dart';
 import 'package:active_memory/src/features/reference/domain/exercise/repository/exercise_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,6 +11,7 @@ class ReferenceState {
   final String selectedBodyPart; // 선택된 대분류 코드 (예: 'CHEST', 'ALL')
   final String searchQuery; // 검색어
   final bool isLoading; // 로딩 상태
+  final List<BodyPart> bodyParts;
 
   ReferenceState({
     this.allExercises = const [],
@@ -17,6 +19,7 @@ class ReferenceState {
     this.selectedBodyPart = 'ALL',
     this.searchQuery = '',
     this.isLoading = true,
+    this.bodyParts = const [],
   });
 
   ReferenceState copyWith({
@@ -25,6 +28,7 @@ class ReferenceState {
     String? selectedBodyPart,
     String? searchQuery,
     bool? isLoading,
+    List<BodyPart>? bodyParts,
   }) {
     return ReferenceState(
       allExercises: allExercises ?? this.allExercises,
@@ -32,6 +36,7 @@ class ReferenceState {
       selectedBodyPart: selectedBodyPart ?? this.selectedBodyPart,
       searchQuery: searchQuery ?? this.searchQuery,
       isLoading: isLoading ?? this.isLoading,
+      bodyParts: bodyParts ?? this.bodyParts,
     );
   }
 }
@@ -53,9 +58,21 @@ class ReferenceViewModel extends StateNotifier<ReferenceState> {
       final exercises =
           await _repository.getExercies(); // (오타 그대로 유지: getExercies)
 
+      final uniqueBodyPartsMap = <String, BodyPart>{};
+
+      for (final ex in exercises) {
+        if (!uniqueBodyPartsMap.containsKey(ex.bodyPartCode)) {
+          uniqueBodyPartsMap[ex.bodyPartCode] = BodyPart(
+            code: ex.bodyPartCode,
+            name: ex.bodyPartName,
+          );
+        }
+      }
+
       state = state.copyWith(
         allExercises: exercises,
         filteredExercises: exercises, // 처음엔 전체 표시
+        bodyParts: uniqueBodyPartsMap.values.toList(),
         isLoading: false,
       );
     } catch (e) {

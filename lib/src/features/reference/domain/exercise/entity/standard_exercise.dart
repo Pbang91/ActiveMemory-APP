@@ -1,3 +1,5 @@
+import 'package:active_memory/src/features/reference/domain/exercise/entity/standard_exercise_muscle.dart';
+
 class StandardExercise {
   final int id;
   final String name;
@@ -5,8 +7,7 @@ class StandardExercise {
   final String bodyPartName; // code 한글
   final String bodyPartCode;
   final String equipmentName; // type 한글
-
-  final List<String> targetMuscles;
+  final List<StandardExerciseMuscle> targetMuscles;
 
   StandardExercise({
     required this.id,

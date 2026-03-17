@@ -27,108 +27,106 @@ class MyPageScreen extends ConsumerWidget {
           children: [
             const SizedBox(height: 20),
 
-            // [Section 1] 프로필 카드
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  // 1. 큰 아바타
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.blue.shade100,
-                    child: Text(
-                      user.nickname[0].toUpperCase(),
-                      style:
-                          TextStyle(fontSize: 32, color: Colors.blue.shade800),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+            // TODO: [Section 1] 프로필 카드
+            // Container(
+            //   margin: const EdgeInsets.symmetric(horizontal: 20),
+            //   padding: const EdgeInsets.all(20),
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(16),
+            //     boxShadow: [
+            //       BoxShadow(
+            //         color: Colors.grey.withOpacity(0.1),
+            //         spreadRadius: 1,
+            //         blurRadius: 10,
+            //         offset: const Offset(0, 5),
+            //       ),
+            //     ],
+            //   ),
+            //   child: Column(
+            //     children: [
+            //       // 1. 큰 아바타
+            //       CircleAvatar(
+            //         radius: 40,
+            //         backgroundColor: Colors.blue.shade100,
+            //         child: Text(
+            //           user.nickname[0].toUpperCase(),
+            //           style:
+            //               TextStyle(fontSize: 32, color: Colors.blue.shade800),
+            //         ),
+            //       ),
+            //       const SizedBox(height: 16),
 
-                  // 2. 닉네임 & 이메일
-                  Text(
-                    user.nickname,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    user.email ?? '',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
+            //       // 2. 닉네임 & 이메일
+            //       Text(
+            //         user.nickname,
+            //         style: const TextStyle(
+            //           fontSize: 20,
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 4),
+            //       Text(
+            //         user.email ?? '',
+            //         style: TextStyle(
+            //           fontSize: 14,
+            //           color: Colors.grey.shade600,
+            //         ),
+            //       ),
 
-                  // 3. Bio (한줄 소개)
-                  if (user.bio != null && user.bio!.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        user.bio!,
-                        style: TextStyle(color: Colors.grey.shade800),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+            //       // 3. Bio (한줄 소개)
+            //       if (user.bio != null && user.bio!.isNotEmpty) ...[
+            //         const SizedBox(height: 16),
+            //         Container(
+            //           padding: const EdgeInsets.symmetric(
+            //               horizontal: 12, vertical: 8),
+            //           decoration: BoxDecoration(
+            //             color: Colors.grey.shade50,
+            //             borderRadius: BorderRadius.circular(8),
+            //           ),
+            //           child: Text(
+            //             user.bio!,
+            //             style: TextStyle(color: Colors.grey.shade800),
+            //             textAlign: TextAlign.center,
+            //           ),
+            //         ),
+            //       ],
+            //     ],
+            //   ),
+            // ),
 
-            const SizedBox(height: 30),
+            // const SizedBox(height: 30),
 
-            // [Section 2] 메뉴 리스트 (ListTile)
-            _buildMenuTile(
-              icon: Icons.edit_outlined,
-              title: "프로필 수정",
-              onTap: () {
-                // TODO: 프로필 수정 화면 이동
-              },
-            ),
-            _buildMenuTile(
-              icon: Icons.notifications_outlined,
-              title: "알림 설정",
-              onTap: () {},
-            ),
-            _buildMenuTile(
-              icon: Icons.history,
-              title: "내 활동 기록",
-              onTap: () {},
-            ),
+            // TODO: [Section 2] 메뉴 리스트 (ListTile)
+            // _buildMenuTile(
+            //   icon: Icons.edit_outlined,
+            //   title: "프로필 수정",
+            //   onTap: () {},
+            // ),
+            // _buildMenuTile(
+            //   icon: Icons.notifications_outlined,
+            //   title: "알림 설정",
+            //   onTap: () {},
+            // ),
+            // _buildMenuTile(
+            //   icon: Icons.history,
+            //   title: "내 활동 기록",
+            //   onTap: () {},
+            // ),
             _buildMenuTile(
                 icon: Icons.fitness_center,
                 title: "내 체육관 관리",
                 iconColor: AppColors.primary,
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const MyGymListScreen()));
+                    context,
+                    MaterialPageRoute(builder: (_) => const MyGymListScreen()),
+                  );
                 }),
 
             const Divider(height: 40, thickness: 1),
 
-            // [Section 3] 로그아웃 (위험한 기능은 빨간색)
+            // [Section 3] 로그아웃
             _buildMenuTile(
               icon: Icons.logout,
               title: "로그아웃",
@@ -161,15 +159,14 @@ class MyPageScreen extends ConsumerWidget {
                 }
               },
             ),
-            _buildMenuTile(
-              icon: Icons.person_off_outlined,
-              title: "회원 탈퇴",
-              textColor: Colors.grey,
-              iconColor: Colors.grey,
-              onTap: () {
-                // TODO: 탈퇴 로직
-              },
-            ),
+            // TODO: [Section4] 회원탈퇴
+            // _buildMenuTile(
+            //   icon: Icons.person_off_outlined,
+            //   title: "회원 탈퇴",
+            //   textColor: Colors.grey,
+            //   iconColor: Colors.grey,
+            //   onTap: () {},
+            // ),
           ],
         ),
       ),

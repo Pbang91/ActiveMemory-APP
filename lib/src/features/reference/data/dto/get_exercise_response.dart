@@ -67,3 +67,14 @@ class GetExerciseMuscle {
   factory GetExerciseMuscle.fromJson(Map<String, dynamic> json) =>
       _$GetExerciseMuscleFromJson(json);
 }
+
+@JsonSerializable()
+class GetMuscleResponse {
+  final int id;
+  final String name;
+
+  GetMuscleResponse({required this.id, required this.name});
+
+  factory GetMuscleResponse.fromJson(Map<String, dynamic> json) =>
+      _$GetMuscleResponseFromJson(json);
+}

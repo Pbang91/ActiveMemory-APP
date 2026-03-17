@@ -48,12 +48,12 @@ class _MainScreenState extends State<MainScreen> {
           NavigationDestination(
             icon: Icon(Icons.fitness_center_outlined),
             selectedIcon: Icon(Icons.fitness_center),
-            label: '운동',
+            label: '기록',
           ),
           NavigationDestination(
             icon: Icon(Icons.library_books_outlined),
             selectedIcon: Icon(Icons.library_books),
-            label: '자료', // Reference
+            label: '운동 종류',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),

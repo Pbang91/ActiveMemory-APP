@@ -2,7 +2,8 @@ import 'package:active_memory/src/common/network/dio_client.dart';
 import 'package:active_memory/src/features/reference/data/mapper/exercise_mapper.dart';
 import 'package:active_memory/src/features/reference/data/mapper/gym_mapper.dart';
 import 'package:active_memory/src/features/reference/data/reference_api.dart';
-import 'package:active_memory/src/features/reference/domain/exercise/entity/exercise.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/muscle.dart';
+import 'package:active_memory/src/features/reference/domain/exercise/entity/standard_exercise.dart';
 import 'package:active_memory/src/features/reference/domain/exercise/repository/exercise_repository.dart';
 import 'package:active_memory/src/features/reference/domain/gym/entity/gym.dart';
 import 'package:active_memory/src/features/reference/domain/gym/repository/gym_repository.dart';
@@ -27,6 +28,13 @@ class ExerciseRepositoryImpl implements ExerciseRepository {
   @override
   Future<List<StandardExercise>> getExercies() async {
     final response = await _api.getExercies();
+
+    return response.data.map((dto) => dto.toEntity()).toList();
+  }
+
+  @override
+  Future<List<Muscle>> getMuscles() async {
+    final response = await _api.getMuscles();
 
     return response.data.map((dto) => dto.toEntity()).toList();
   }
